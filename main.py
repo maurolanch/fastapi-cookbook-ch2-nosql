@@ -56,8 +56,9 @@ def get_user(user_id: str):
             status_code=404,
             detail="User not found"
         )
-    user_response = UserResponse(
-        id=str(db_user["_id"]),
-        **db_user
-    )
-    return user_response
+    #user_response = UserResponse(
+     #   id=str(db_user["_id"]),
+    #    **db_user
+    db_user["id"] = str(db_user["_id"])
+    del db_user["_id"]
+    return db_user
