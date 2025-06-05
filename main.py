@@ -1,17 +1,33 @@
 from nosql_example.database import user_collection
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
 
 
 app = FastAPI()
 
+class Tweet (BaseModel):
+    content: str    
+    hashtag:list[str]
+
 class User(BaseModel):
     name: str
     email: EmailStr
+    age: Optional[int]
+    tweets: list[Tweet] | None = None
+
+    @field_validator("age")
+    def validate_age(cls, value):
+        if value < 18 or value > 100:
+            raise ValueError(
+                "Age must be between 18 and 100"
+            )
+        return value
 
 class UserResponse(User):
     id: str
+
+
 
 @app.get("/users")
 def read_users() ->list[UserResponse]:
@@ -20,8 +36,11 @@ def read_users() ->list[UserResponse]:
         users.append(UserResponse(
         id=str(user["_id"]),
         name=user["name"],
-        email=user["email"]
-))
+        email=user["email"],
+        age=user["age"],
+        tweets=user["tweets"]
+        ))
+
     return users
 
 
