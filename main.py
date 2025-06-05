@@ -1,12 +1,14 @@
 from nosql_example.database import user_collection
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from typing import Optional
+
 
 app = FastAPI()
 
 class User(BaseModel):
     name: str
-    email: str
+    email: EmailStr
 
 class UserResponse(User):
     id: str
