@@ -12,8 +12,15 @@ class UserResponse(User):
     id: str
 
 @app.get("/users")
-def read_users() ->list[User]:
-    return [user for user in user_collection.find()]
+def read_users() ->list[UserResponse]:
+    users = []
+    for user in user_collection.find():
+        users.append(UserResponse(
+        id=str(user["_id"]),
+        name=user["name"],
+        email=user["email"]
+))
+    return users
 
 
 @app.post("/user")
